@@ -7,5 +7,5 @@ env:
   - ISOLCSS_ALLOW_RE=1 REGEX_VERSION=
   - REGEX_VERSION=0.1.20121120
 install:
-  - '[ -z "$REGEX" ] || pip install -q regex==$REGEX_VERSION --use-mirrors'
+  - '[ -z "$REGEX_VERSION" ] || pip install -q regex==$REGEX_VERSION --use-mirrors'
 script: python isolcss/tests.py
