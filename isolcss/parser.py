@@ -43,7 +43,7 @@ quoted = r'''(?:
     "                   # end double quote
   | '                   # OR start single quote
     (?: [^'\\\r\n]++    # anything except \ cr or nl
-      | \\(\r\n|.\s)    # \ followed by crnl or anything
+      | \\(\r\n|.|\s)   # \ followed by crnl or anything
       )*+               # zero or more
     '                   # end single quote
     )'''
