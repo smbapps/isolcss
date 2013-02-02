@@ -1,13 +1,14 @@
-#!/usr/bin/env python
 """
-Utilities for parsing and modifying css
+Purpose-built CSS parser for isolcss
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
-import logging
-import sys
 
+# The regex module has optimizations that make this parser faster:
+#   ++ is same as + but forbids backtracking.
+#   *+ is same as * but forbids backtracking.
 try:
     import regex as re
     re.DEFAULT_VERSION = re.V1
@@ -19,14 +20,6 @@ except ImportError:
         patt = patt.replace('*+', '*')
         return re.compile(patt, flags)
 
-
-logger = logging.getLogger(__name__)
-
-
-# Note regex V1 features:
-#   ++ is same as + but forbids backtracking.
-#   *+ is same as * but forbids backtracking.
-#   (?flags:...) scopes regex flags.
 
 comment = r'''(?:
     /\*                 # start comment
@@ -144,58 +137,3 @@ def matchall(r, s, flags=0):
         return [m.group(0) for m in matchiter(r, s, flags)]
     except ValueError:
         return None
-
-
-def prefix_sels(prefix, css):
-    """
-    Returns `css` with all selectors prefixed by `prefix`,
-    or replacing "&" as SASS and LESS both do.
-    Tries to parse strictly then falls back, with a warning, to forgiving
-    parse if necessary.
-    """
-    try:
-        all(True for m in matchiter(selrule_or_atom_re, css))
-    except ValueError as e:
-        logger.warn("Strict parse failed at: %r" % str(e)[:50])
-        splits = matchiter(selrule_or_any_re, css)
-    else:
-        splits = matchiter(selrule_or_atom_re, css)
-
-    css = []
-
-    for m in splits:
-        if not m.groupdict()['sels']:
-            css.extend(m.group(0))
-            continue
-
-        sels = matchall(sel_re, m.group('sels'))
-
-        if not sels:
-            # This should never happen because sel_re is a subpattern
-            # of the original match.
-            logger.error("Failed to split selectors: %s", m.group('sels'))
-            css.extend(m.group(0))
-            continue
-
-        for sel in sels:
-            atoms = matchall(atom_re, sel)
-            if '&' in atoms:
-                sel = ''.join((prefix if a == '&' else a) for a in atoms)
-            else:
-                sel = '%s %s' % (prefix, sel)
-            css.append(sel)
-        css.append(m.group('ruleset'))
-
-    return ''.join(css)
-
-
-# Run this on the command-line as "python css.py '#X' < foo.css"
-def main(*argv):
-    prefix = argv[0]
-    css = sys.stdin.read()
-    sys.stdout.write(prefix_sels(prefix, css))
-
-if __name__ == '__main__':
-    main(*sys.argv[1:])
-
-__all__ = ['prefix_sels']
