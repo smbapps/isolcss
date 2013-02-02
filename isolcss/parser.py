@@ -5,15 +5,24 @@ Purpose-built CSS parser for isolcss
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import os
 
 # The regex module has optimizations that make this parser faster:
 #   ++ is same as + but forbids backtracking.
 #   *+ is same as * but forbids backtracking.
 try:
     import regex as re
-    re.DEFAULT_VERSION = re.V1
-    compile = re.compile
+    def compile(patt, flags=0):
+        flags |= re.V1
+        return re.compile(patt, flags)
 except ImportError:
+    if not os.environ.get('ISOLCSS_ALLOW_RE'):
+        # If you really want to allow the re module, set ISOLCSS_ALLOW_RE=1
+        # in your environment. This fallback is disabled by default because
+        # the backtracking with the re module is so expensive that parse
+        # failure on a large hunk of css (for example the bootstrap css in
+        # testdata) can take multiple minutes to return.
+        raise
     import re
     def compile(patt, flags=0):
         patt = patt.replace('++', '+')

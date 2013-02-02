@@ -4,7 +4,7 @@ python:
   - "2.7"
   - "3.3"
 env:
-  - REGEX_VERSION=
+  - ISOLCSS_ALLOW_RE=1 REGEX_VERSION=
   - REGEX_VERSION=0.1.20121120
 install:
   - '[ -z "$REGEX" ] || pip install -q regex==$REGEX_VERSION --use-mirrors'
