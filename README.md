@@ -1,6 +1,8 @@
 isolcss
 =======
 
+[![Build Status](https://travis-ci.org/pagepart/isolcss.png)](https://travis-ci.org/pagepart/isolcss)
+
 CSS isolator for embedding standalone HTML/CSS into a containing page.
 
 Written by the [PagePart Team][1] and released under the [BSD License][2].
