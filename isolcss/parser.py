@@ -20,6 +20,12 @@ except ImportError:
         patt = patt.replace('*+', '*')
         return re.compile(patt, flags)
 
+try:
+    basestring
+except NameError:
+    # Hello Python 3
+    basestring = str
+
 
 comment = r'''(?:
     /\*                 # start comment
