@@ -20,7 +20,7 @@ def isolcss(prefix, css):
         # Attempt full strict parse, raise exception on failure.
         all(True for m in matchiter(selrule_or_atom_re, css))
     except ValueError as e:
-        logger.warn("Strict parse fails at: {!r}".format(e.message[:50]))
+        logger.warning("Strict parse failed at char {}".format(e.args[0]))
         splits = matchiter(selrule_or_any_re, css)
     else:
         splits = matchiter(selrule_or_atom_re, css)

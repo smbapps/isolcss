@@ -126,11 +126,14 @@ def matchiter(r, s, flags=0):
     """
     if isinstance(r, basestring):
         r = re.compile(r, flags)
+    i = 0
     while s:
         m = r.match(s)
-        if not m or not m.group(0):
-            raise ValueError(s)
-        s = s[len(m.group(0)):]
+        g = m and m.group(0)
+        if not m or not g:
+            raise ValueError("{}: {!r}".format(i, s[:50]))
+        i += len(g)
+        s = s[len(g):]
         yield m
 
 
