@@ -18,8 +18,7 @@ url = 'https://github.com/pagepart/isolcss'
 author = 'PagePart Team'
 author_email = 'opensource@pagepart.com'
 license = 'BSD'
-install_requires = []
-requires = ['regex']
+install_requires = ['regex']
 
 
 def get_version(package):
@@ -75,5 +74,4 @@ setup(
     packages=get_packages(package),
     package_data=get_package_data(package),
     install_requires=install_requires,
-    requires=requires,
 )
